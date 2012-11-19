@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Midan ADMINS</title>
+<!-- Google-hosted jQuery library, for faster loading! -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+</script>
+</head>
+<body>
+<form>
+<input type="text" id="msg" placeholder="message"></input>
+<input type="text" id="link" placeholder="relative href"></input>
+</form>
+<a href="javascript:go();">Go</a>
+<script>
+function go()
+{
+	var str=$("input#msg").val();
+	var href=$("input#link").val();
+	while(str.indexOf(' ')!=-1)
+		str=str.replace(' ','%20');
+	
+	top.location.href="https://www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=_tcna"+str+"_href"+href;
+}
+</script>
+</body>
+</html>

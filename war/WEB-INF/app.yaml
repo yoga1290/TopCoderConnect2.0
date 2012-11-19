@@ -1,0 +1,11 @@
+application: yoga1290
+version: 1
+runtime: java
+
+handlers:
+
+- url: /*
+  servlet: yoga1290.printk.Prin_tkServlet
+
+- url: /admin/*
+  login: admin

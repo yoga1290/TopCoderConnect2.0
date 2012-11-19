@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Just testing</title>
+<meta http-equiv="X-Frame-Options" content="GOFORIT">
+
+<!-- <script src="jquery.js">-->
+<!-- Google-hosted jQuery library, for faster loading! -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+</script>
+</head>
+<body>
+<div id="srmmenu"></div>
+<br>
+<div id="preview"></div>
+<script>
+var srms=[];
+$(document).ready(function(){
+
+	alert("loading");
+	
+	
+	$.get(location.protocol+"//yoga1290.appspot.com/topcoder/listsrms",function(data){
+		var roundID,srmname;
+		alert(data.length);
+		var i,d=data.split("</row>");
+		
+		for(i=d.length-1;i>=0;i--)
+		{
+			roundID=d[i].substring(d[i].indexOf("<round_id>")+10,d[i].indexOf("</round_id>"));
+			srmname=d[i].substring(d[i].indexOf("<short_name>")+12,d[i].indexOf("</short_name>"));
+			srms.push([roundID,srmname]);
+//			alert("loaded "+roundID+","+srmname);
+		//	d=d.substring(d.indexOf("</row>"),d.length);
+		}
+		alert("there were "+srms.length);
+
+		var txt="";
+		if(srms.length>0)
+			txt='<form><select id="allsrms"><option value="'+srms[0][0]+'" selected="selected">'+srms[0][1]+'</option>';
+		for(i=1;i<srms.length;i++)
+			txt+='<option value="'+srms[i][0]+'">'+srms[i][1]+'</option>';
+		txt+='</select></form>';
+		$("div#srmmenu").html(txt);
+		
+		$("select#allsrms").change(function () {
+			$("div#preview").html("Loading..");
+	          $.get(location.protocol+"//yoga1290.appspot.com/topcoder/srmresult/22691254/"+$("select option:selected").val(),function(d2){
+	          		$("div#preview").html(d2);
+	          });      
+		});
+	 // */ 
+
+	});
+});
+
+
+</script>
+</body>
+</html>

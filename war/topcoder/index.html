@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>TopCoder Connect 2.0</title>
+</head>
+<body>
+<!--
+<form id="form1" name="form1">
+<input id="handle" type="text" placeholder="TopCoder Handle Here!" />
+<a href="javascript:go();">facebook G0!</a>
+</form>
+-->
+<script>
+function go()
+{
+	top.location.href="https://www.facebook.com/dialog/oauth?client_id= 453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me,email&state=tc"+document.getElementById("handle").value;
+}
+top.location.href="https://www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=tcchome";
+</script>
+</body>
+</html>
