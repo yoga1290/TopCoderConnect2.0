@@ -1,0 +1,177 @@
+<html>
+<head>
+<title>TopCoder Connect 2.0</title>
+<!-- using jQuery library hosted on Google, everywhere fast servers
+
+Most probably,it's cashed in your machine b4 even loading this page ;) -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js"></script>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+
+<style>
+.preview
+{
+	position: absolute;
+	margin: 0 auto;
+	display: "";
+}
+</style>
+</head>
+
+
+<body> <! link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF">
+
+
+<!-- The popping flexable div ;) -->
+<div id="pre" class="preview"></div>
+
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td align="right" valign="bottom" ><img src="http://yoga1290.appspot.com/topcoder/c1.png"/></td><td align="left" valign="bottom" background="http://yoga1290.appspot.com/topcoder/north.png"></td><td align="left" valign="bottom" ><img src="http://yoga1290.appspot.com/topcoder/c2.png"/>
+</td>
+</tr>
+<tr>
+<td align="right" background="http://yoga1290.appspot.com/topcoder/west.png"></td><td align="center" background="http://yoga1290.appspot.com/topcoder/bg.png"><font color="white">
+<a class="pop" id="share">Share</a>
+</font></td><td align="left" background="http://yoga1290.appspot.com/topcoder/east.png"></td>
+</tr>
+<tr>
+<td align="right" valign="bottom"> <img src="http://yoga1290.appspot.com/topcoder/c3.png"/></td><td align="center" valign="bottom" background="http://yoga1290.appspot.com/topcoder/south.png"></td><td align="left" valign="bottom" > <img src="http://yoga1290.appspot.com/topcoder/c4.png"/></td>
+</tr>
+</table>
+
+<script>
+    
+    var coderID=;
+    
+    
+    function view(txt)
+    {
+        return '<table border="0" cellpadding="0" cellspacing="0"><tr><td align="right" valign="bottom" ><img src="http://yoga1290.appspot.com/topcoder/c1.png"/></td><td align="left" valign="bottom" background="http://yoga1290.appspot.com/topcoder/north.png"><img src="http://yoga1290.appspot.com/topcoder/tip.png"/></td><td align="left" valign="bottom" ><img src="http://yoga1290.appspot.com/topcoder/c2.png"/></td></tr><tr><td align="right" background="http://yoga1290.appspot.com/topcoder/west.png"></td><td align="center" background="http://yoga1290.appspot.com/topcoder/bg.png"><font color="white">'+txt+'</font></td><td align="left" background="http://yoga1290.appspot.com/topcoder/east.png"></td></tr><tr><td align="right" valign="bottom"> <img src="http://yoga1290.appspot.com/topcoder/c3.png"/></td><td align="center" valign="bottom" background="http://yoga1290.appspot.com/topcoder/south.png"></td><td align="left" valign="bottom" > <img src="http://yoga1290.appspot.com/topcoder/c4.png"/></td></tr></table>';
+    }
+function loadSRMList()
+{
+	$("#pre").html(view("Loading SRM List<br><progress>Loading...</progress>"));
+	//TODO
+	$.get(location.protocol+"//community.topcoder.com/tc?module=BasicData&c=dd_round_list",function(data){
+		var txt="";
+		while(data.indexOf('<round_id>')!=-1)
+		{
+			txt='<option value="'+data.substring(data.indexOf('<round_id>')+10,data.indexOf('</round_id>'))+'">'+ data.substring(data.indexOf('<short_name>')+12,data.indexOf('</short_name>')) +'</option>'+txt;
+			data=data.substring(data.indexOf('</short_name>')+13,data.length);
+		}
+		txt='<option value="-1" selected>Pick something!</option>'+txt;
+		txt="<select id='srmlist'>"+txt+"</select>";
+		$("#pre").html(view(txt));
+		$("select#srmlist").change(function(){
+			getSRMResult($(this).val());
+		});
+	},"text");
+}
+function getSRMResult(roundID)
+	{
+		var res="",handle="";
+        var protocol=location.protocol;
+        //protocol="http:";
+        
+        $("#pre").html(view("Loading coder's data<br><progress>Loading...</progress>"));
+        //TODO
+		$.get(protocol+"//community.topcoder.com/tc?module=BasicData&c=dd_rating_history&cr="+coderID,function(txt){
+              
+              handle=txt.substring(0,txt.indexOf("<round_id>"+roundID+"</round_id>"));
+              handle=handle.substring(handle.lastIndexOf("<handle>")+8,handle.lastIndexOf("</handle>"));
+              txt=txt.substring(txt.lastIndexOf("<round_id>"+roundID+"</round_id>"));
+              txt=txt.substring(0,txt.indexOf("</row>"));
+              $("#pre").html(view("Loading round data<br><progress>Loading...</progress>"));
+              //TODO
+              $.get(protocol+"//community.topcoder.com/tc?module=BasicData&c=dd_round_results&rd="+roundID,function(roundData){
+                    
+                    roundData=roundData.substring(roundData.indexOf("<coder_id>"+coderID+"</coder_id>"),roundData.length);
+                    roundData=roundData.substring(0,roundData.indexOf("</row>"));
+                    
+                   // res=handle;
+                    
+                    var srmnum=txt.substring(txt.lastIndexOf("<short_name>")+12,txt.lastIndexOf("</short_name>"));
+                    res+=" competed in "+txt.substring(txt.lastIndexOf("<short_name>")+12,txt.lastIndexOf("</short_name>"));
+                    res+=" ( div"+roundData.substring(roundData.lastIndexOf("<division>")+10,roundData.lastIndexOf("</division>"))+" )";
+                    
+                    var oldR=parseInt( txt.substring(txt.lastIndexOf("<old_rating>")+12,txt.lastIndexOf("</old_rating>")) );
+                    var newR=parseInt( txt.substring(txt.lastIndexOf("<new_rating>")+12,txt.lastIndexOf("</new_rating>")) );
+                    
+                    res+=" on "+txt.substring(txt.lastIndexOf("<date>")+6,txt.lastIndexOf("</date>"));
+                    res+="\n "+(newR>=oldR ? "gained":"lost")+" "+ Math.abs(newR-oldR)+" overall rating points\n\n";
+                    
+                    if(roundData.lastIndexOf("<level_one_status>")!=-1)
+                    {
+                        res+="Lvl#1: "+roundData.substring(roundData.lastIndexOf("<level_one_status>")+18,roundData.lastIndexOf("</level_one_status>"));
+                        res+=" with "+roundData.substring(roundData.lastIndexOf("<level_one_final_points>")+24,roundData.lastIndexOf("</level_one_final_points>"));
+                    }
+                    if(roundData.lastIndexOf("<level_two_status>")!=-1)
+                    {
+                        res+="\nLvl#2: "+roundData.substring(roundData.lastIndexOf("<level_two_status>")+18,roundData.lastIndexOf("</level_two_status>"));
+                        res+=" with "+roundData.substring(roundData.lastIndexOf("<level_two_final_points>")+24,roundData.lastIndexOf("</level_two_final_points>"))+" points";
+                    }
+                    if(roundData.lastIndexOf("<level_three_status>")!=-1)
+                    {
+                        res+="\nLvl#3: "+roundData.substring(roundData.lastIndexOf("<level_three_status>")+20,roundData.lastIndexOf("</level_three_status>"));
+                        res+=" with "+roundData.substring(roundData.lastIndexOf("<level_three_final_points>")+26,roundData.lastIndexOf("</level_three_final_points>"))+" points";
+                    }
+                    res+="\n\n Final score= "+roundData.substring(roundData.lastIndexOf("<final_points>")+14,roundData.lastIndexOf("</final_points>"));
+                    
+                    
+                    
+                    FB.ui({
+                          method: 'feed',
+                          redirect_uri: 'http://yoga1290.appspot.com/topcoder',
+                          link: 'http://community.topcoder.com/stat?c=round_overview&er=5&rd='+roundID,
+                          picture: 'http://s3.amazonaws.com/tongal/resized/brand/2b105cf/entity_13_61_logo_nvqcJdvw_1315932949050_212x212.png',
+                          name: "TopCoder "+srmnum,
+                          caption: "["+handle+"]",
+                          description: res
+                          }, function(response){alert(response);});
+
+              },"text");
+        },"text");
+	}
+    
+    
+function setListeners()
+{
+	$("#share").mouseover(loadSRMList);
+}
+
+
+FB.init({appId: "453103851408298", status: true, cookie: true});
+$(document).ready(function(){
+
+        
+		$(".pop").mouseover(function(){
+				$("#pre").html(view("<progress>Loading...</progress>"));
+                
+//				$("#pre").css("left",($(this).offset().left+$(this).width()/2)	+" px");
+				$("#pre").css("left",($(this).offset().left)	+" px");
+				$("#pre").css("top",($(this).offset().top+$(this).height())	+" px");
+
+//				$("#pre").offset({ top: ($(this).offset().top+$(this).height()), left: ($(this).offset().left+$(this).width()/2)});
+				$("#pre").offset({ top: ($(this).offset().top+$(this).height()), left: ($(this).offset().left)});
+
+				$("#pre").hide();
+                $("#pre").slideUp();
+
+				$("#pre").slideDown();
+                
+//				$.get($(this).attr("href"),	function(data){
+//							$("#pre").html(view(data));
+//					});
+
+			});
+
+//		$("#pre").mouseout(function(){
+//				$("#pre").slideUp();
+//			});
+		setListeners();
+});
+</script>
+
+</body>
+</html>

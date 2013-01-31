@@ -16,8 +16,8 @@ function go()
 {
 	var str=$("input#msg").val();
 	var href=$("input#link").val();
-	while(str.indexOf(' ')!=-1)
-		str=str.replace(' ','%20');
+//	while(str.indexOf(' ')!=-1)
+//		str=str.replace(' ','%20');
 	
 	top.location.href="https://www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=_tcna"+str+"_href"+href;
 }

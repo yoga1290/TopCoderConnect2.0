@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Just testing</title>
+<title>TopCoder Connect 2.0 Home</title>
 <meta http-equiv="X-Frame-Options" content="GOFORIT">
 
 <!-- <script src="jquery.js">-->
@@ -9,19 +9,14 @@
 </script>
 </head>
 <body>
-<div id="srmmenu"></div>
+<div id="srmmenu">Loading SRMs...</div>
 <br>
 <div id="preview"></div>
 <script>
 var srms=[];
 $(document).ready(function(){
-
-	alert("loading");
-	
-	
 	$.get(location.protocol+"//yoga1290.appspot.com/topcoder/listsrms",function(data){
 		var roundID,srmname;
-		alert(data.length);
 		var i,d=data.split("</row>");
 		
 		for(i=d.length-1;i>=0;i--)
@@ -32,7 +27,6 @@ $(document).ready(function(){
 //			alert("loaded "+roundID+","+srmname);
 		//	d=d.substring(d.indexOf("</row>"),d.length);
 		}
-		alert("there were "+srms.length);
 
 		var txt="";
 		if(srms.length>0)
@@ -40,13 +34,19 @@ $(document).ready(function(){
 		for(i=1;i<srms.length;i++)
 			txt+='<option value="'+srms[i][0]+'">'+srms[i][1]+'</option>';
 		txt+='</select></form>';
-		$("div#srmmenu").html(txt);
+		$("div#srmmenu").html("Publish result of: "+txt);
 		
 		$("select#allsrms").change(function () {
-			$("div#preview").html("Loading..");
-	          $.get(location.protocol+"//yoga1290.appspot.com/topcoder/srmresult/22691254/"+$("select option:selected").val(),function(d2){
-	          		$("div#preview").html(d2);
-	          });      
+			top.location.href=location.protocol+"//www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=tccpsrm1"+$("select option:selected").val();
+		});
+			/*
+	          $.get(location.protocol+"//www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=tccpsrm1"+$("select option:selected").val(),function(d2){
+					$("div#preview").html("Loading coder's data...");
+					$.get(location.protocol+"//www.facebook.com/dialog/oauth?client_id=453103851408298&redirect_uri=http://yoga1290.appspot.com/oauth/facebook/callback/&scope=user_about_me&state=tccpsrm2"+$("select option:selected").val(),function(d3){
+	          			$("div#preview").text(d3);
+	          		});
+	          });
+	                
 		});
 	 // */ 
 
